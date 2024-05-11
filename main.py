@@ -1,11 +1,12 @@
 from Models.SORTN import SORTN
 from Models.SRUN_SinglePass import SRUN_SinglePass
 from Models.SRUN_2Step import SRUN_2Step
-from SAR_Optic_Dataset import SAR_optic_dataset, collate_func
+from SAR_Optic_Dataset import SAR_optic_dataset, collate_func, SAR_optic_dataset_2Step_Val
 import yaml
 import argparse
 
-from train import train
+from Runner.train import train
+from Runner.validate import validate_singlepass, validate_2step
 
 import torch
 from torch import optim
@@ -92,9 +93,15 @@ if to_do == 'train':
     
 elif to_do == 'validate':
     print('Loading dataset for validation')
-    dataset = SAR_optic_dataset(cfg, args.dataset_path, tensor_transform=True)
+    if cfg['RESOLUTION_METHOD'] == 'Single Pass':
+        dataset = SAR_optic_dataset(cfg, args.dataset_path, tensor_transform=True)
+    else:
+        dataset = SAR_optic_dataset_2Step_Val(cfg, args.dataset_path, tensor_transform=True)
     infer_loader = DataLoader(dataset, batch_size=128, num_workers=8, shuffle=False)
     weights = torch.load(cfg['SRUN_VALIDATION_CKPT'])
     srun_model.load_state_dict(weights['model'])
-    resolution_scale = cfg['FINAL_RESOLUTION']
-    # validate(cfg, infer_loader, srun_model, resolution_scale)
+
+    if cfg['RESOLUTION_METHOD'] == 'Single Pass':
+        validate_singlepass(cfg, infer_loader, srun_model, generator)
+    else:
+        validate_2step(cfg, infer_loader, srun_model, generator)

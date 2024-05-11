@@ -109,7 +109,7 @@ class SAR_optic_dataset(Dataset):
         for folder in sar_folder_names:  
             temp = sorted(glob(os.path.join(folder, '*')))
             for sar_path in temp:
-                if random.random() < 0.20:  # Using only one-fourth of the dataset for training
+                if random.random() < 0.20:  # Using only one-fifth of the dataset for training
                     # Finding the corresponding optic file path
                     parts = sar_path.split('_')
                     parts[-3] = 's2'
@@ -119,7 +119,7 @@ class SAR_optic_dataset(Dataset):
                     if os.path.isfile(optic_path):
                         self.sar_files.append(sar_path)
                         self.optic_files.append(optic_path)
-                        # break
+                        # if len(self.sar_files) == 1000 :return
 
 
     def __getitem__ (self, index):
@@ -128,6 +128,55 @@ class SAR_optic_dataset(Dataset):
         sar_img = cv2.imread(sar_path)[:,:,0]
         
         return self.cfg, optic_img, sar_img
+
+    def __len__ (self):
+        return len(self.sar_files)
+
+
+class SAR_optic_dataset_2Step_Val(Dataset):
+    def __init__(self, cfg, root_dir, tensor_transform = True):
+        self.tensor_transform = tensor_transform
+        self.fetch_data_pairs(root_dir)
+        self.cfg = cfg
+
+    def fetch_data_pairs(self, root_dir):
+        sar_folder_names = sorted(glob(os.path.join(root_dir, '*', 's1_*')))
+        self.sar_files = []
+        self.optic_files = []
+        print('Finding the paths of SAR and Optical Image files, this might take a minute...')
+        for folder in sar_folder_names:  
+            temp = sorted(glob(os.path.join(folder, '*')))
+            for sar_path in temp:
+                if random.random() < 0.20:  # Using only one-fifth of the dataset for training
+                    # Finding the corresponding optic file path
+                    parts = sar_path.split('_')
+                    parts[-3] = 's2'
+                    parts[1] = os.path.join(os.path.dirname(parts[1]), 's2')
+                    optic_path = '_'.join(parts)
+                    # Appending only if the corresponding optical images are present as well
+                    if os.path.isfile(optic_path):
+                        self.sar_files.append(sar_path)
+                        self.optic_files.append(optic_path)
+
+
+    def __getitem__ (self, index):
+        optic_path, sar_path = self.optic_files[index], self.sar_files[index]
+        optic_img = Image.open(optic_path).convert('RGB')
+        sar_img = cv2.imread(sar_path)[:,:,0]
+
+        width = int(sar_img.shape[1]/16)
+        height = int(sar_img.shape[0]/16)
+        dim = (width, height)
+        tmc_img_lr = cv2.resize(sar_img, dim, interpolation=cv2.INTER_CUBIC)
+
+        sar_img_hr = Image.fromarray(sar_img)
+        sar_img_lr = Image.fromarray(sar_img_lr)
+        if self.tensor_transform:
+            transform_img = transforms.Compose([transforms.ToTensor()])
+            sar_img_lr = transform_img(sar_img_lr)
+            sar_img_hr = transform_img(sar_img_hr)
+            optic_img = transform_img(optic_img)
+        return optic_img, sar_img_hr, sar_img_lr
 
     def __len__ (self):
         return len(self.sar_files)

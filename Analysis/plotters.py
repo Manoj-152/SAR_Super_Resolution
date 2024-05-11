@@ -22,7 +22,10 @@ def train_plotter(cfg, srun_model, generator, trainloader, epoch, scale_factor, 
             res_label = res_label.cuda()
 
         with torch.no_grad():
-            sar_sr,_ = srun_model(sar_lr, res_label)
+            if cfg['RESOLUTION_METHOD'] == 'Two Step':
+                sar_sr,_ = srun_model(sar_lr, res_label)
+            else:
+                sar_sr,_ = srun_model(sar_lr)
             optic_gen_hr,_ = generator(F.interpolate(sar_hr, size=[256,256], mode='bicubic'))
             optic_gen_sr,_ = generator(F.interpolate(sar_sr, size=[256,256], mode='bicubic'))
             
@@ -66,7 +69,10 @@ def test_plotter(cfg, srun_model, generator, valloader, epoch, scale_factor, pat
                 sar_lr = sar_lr.cuda()
                 res_label = res_label.cuda()
             with torch.no_grad():
-                sar_sr,_ = srun_model(sar_lr, res_label)
+                if cfg['RESOLUTION_METHOD'] == 'Two Step':
+                    sar_sr,_ = srun_model(sar_lr, res_label)
+                else:
+                    sar_sr,_ = srun_model(sar_lr)
                 optic_gen_hr,_ = generator(F.interpolate(sar_hr, size=[256,256], mode='bicubic'))
                 optic_gen_sr,_ = generator(F.interpolate(sar_sr, size=[256,256], mode='bicubic'))
                 

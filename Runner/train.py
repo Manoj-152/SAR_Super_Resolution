@@ -122,7 +122,10 @@ def train(cfg, trainloader, valloader, trainloader_plot, valloader_plot, srun_mo
             
             batch_size = optic.size(0)
             with torch.no_grad():
-                sar_sr,_ = srun_model(sar_lr, res_label)
+                if cfg['RESOLUTION_METHOD'] == 'Two Step':
+                    sar_sr,_ = srun_model(sar_lr, res_label)
+                else:
+                    sar_sr,_ = srun_model(sar_lr)
             content_loss = F.l1_loss(sar_sr, sar_hr)
             
             with torch.no_grad():

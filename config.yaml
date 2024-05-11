@@ -1,5 +1,3 @@
-# Paths need to be changed
-
 RESOLUTION_METHOD: 'Single Pass'  # Single Pass, and Two Step are the valid methods
 SCALE_RATIO: 2
 
