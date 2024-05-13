@@ -95,9 +95,19 @@ elif to_do == 'validate':
     print('Loading dataset for validation')
     if cfg['RESOLUTION_METHOD'] == 'Single Pass':
         dataset = SAR_optic_dataset(cfg, args.dataset_path, tensor_transform=True)
+        print(f'Dataset size: {len(dataset)} images')
+        a = int(0.9 * len(dataset))
+        b = len(dataset) - a
+        train_ds, val_ds = torch.utils.data.random_split(dataset, (a, b))
+        infer_loader = DataLoader(val_ds, batch_size=1, collate_fn=collate_func, num_workers=8, shuffle=False)
     else:
         dataset = SAR_optic_dataset_2Step_Val(cfg, args.dataset_path, tensor_transform=True)
-    infer_loader = DataLoader(dataset, batch_size=128, num_workers=8, shuffle=False)
+        print(f'Dataset size: {len(dataset)} images')
+        a = int(0.9 * len(dataset))
+        b = len(dataset) - a
+        train_ds, val_ds = torch.utils.data.random_split(dataset, (a, b))
+        infer_loader = DataLoader(val_ds, batch_size=1, num_workers=8, shuffle=False)
+    
     weights = torch.load(cfg['SRUN_VALIDATION_CKPT'])
     srun_model.load_state_dict(weights['model'])
 

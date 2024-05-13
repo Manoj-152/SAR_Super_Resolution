@@ -167,7 +167,7 @@ class SAR_optic_dataset_2Step_Val(Dataset):
         width = int(sar_img.shape[1]/16)
         height = int(sar_img.shape[0]/16)
         dim = (width, height)
-        tmc_img_lr = cv2.resize(sar_img, dim, interpolation=cv2.INTER_CUBIC)
+        sar_img_lr = cv2.resize(sar_img, dim, interpolation=cv2.INTER_CUBIC)
 
         sar_img_hr = Image.fromarray(sar_img)
         sar_img_lr = Image.fromarray(sar_img_lr)

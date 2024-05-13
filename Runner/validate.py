@@ -1,19 +1,23 @@
 from Analysis.SSIM import ssim
 from Analysis.Performance_Measures import psnr
 
+import torchvision.utils as vutils
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-torch.manual_seed(10)    
+import random
+torch.manual_seed(10)
+random.seed(42)    
 
 def plot_validation(sar_lr, sar_sr, sar_hr, scale_factor, plot_cnt, path):
     sar_lr_plot = F.interpolate(sar_lr, scale_factor=scale_factor, mode='nearest')
     batch_tensor1 = sar_lr_plot
     batch_tensor1 = torch.cat([batch_tensor1, sar_sr], dim=0)
     batch_tensor1 = torch.cat([batch_tensor1, sar_hr], dim=0)
-    grid_img = vutils.make_grid(batch_tensor1, nrow=1)
+    grid_img = vutils.make_grid(batch_tensor1, nrow=3)
     plt.imshow(grid_img[0].squeeze().cpu().detach().numpy(), "gray")
     plt.savefig(path+'Generated_SAR_epoch_'+str(plot_cnt)+'.png', dpi=350)
 
@@ -36,6 +40,7 @@ def validate_singlepass(cfg, valloader, srun_model, generator):
     running_eval_loss = 0.
     running_psnr = 0.
     running_ssim = 0.
+    plot_cnt = 0
 
     for n,(optic,sar_hr,sar_lr,res_label) in enumerate(tqdm(valloader)):
         if n == len(valloader) - 1: break
@@ -75,7 +80,7 @@ def validate_singlepass(cfg, valloader, srun_model, generator):
             plot_cnt += 1
             plot_validation(sar_lr, sar_sr, sar_hr, cfg['SCALE_RATIO'], plot_cnt, cfg['RESULT_DIRS']['GENERATED_IMAGES'] + '/Validation_Results/')
 
-    print('Epoch: ',epoch,' Content_Test_loss: ',round(running_content_loss / (len(valloader) - 1), 4), ' Eval_Test_loss: ', round(running_eval_loss/ (len(valloader)-1),4), ' Overall_Test_loss: ', round(running_loss/(len(valloader)-1),4), ' SSIM score: ',round(running_ssim / (len(valloader) - 1), 4), \
+    print('Validation: Content_Test_loss: ',round(running_content_loss / (len(valloader) - 1), 4), ' Eval_Test_loss: ', round(running_eval_loss/ (len(valloader)-1),4), ' Overall_Test_loss: ', round(running_loss/(len(valloader)-1),4), ' SSIM score: ',round(running_ssim / (len(valloader) - 1), 4), \
                                                 ' PSNR score: ',round(running_psnr / (len(valloader) - 1), 4))
                                                 
 
@@ -97,6 +102,7 @@ def validate_2step(cfg, valloader, srun_model, generator):
     running_eval_loss = 0.
     running_psnr = 0.
     running_ssim = 0.
+    plot_cnt = 0
 
     for n,(optic,sar_hr,sar_lr) in enumerate(tqdm(valloader)):
         if n == len(valloader) - 1: break
@@ -138,5 +144,5 @@ def validate_2step(cfg, valloader, srun_model, generator):
             plot_cnt += 1
             plot_validation(sar_lr, sar_sr, sar_hr, 16, plot_cnt, cfg['RESULT_DIRS']['GENERATED_IMAGES'] + '/Validation_Results/')
 
-    print('Epoch: ',epoch,' Content_Test_loss: ',round(running_content_loss / (len(valloader) - 1), 4), ' Eval_Test_loss: ', round(running_eval_loss/ (len(valloader)-1),4), ' Overall_Test_loss: ', round(running_loss/(len(valloader)-1),4), ' SSIM score: ',round(running_ssim / (len(valloader) - 1), 4), \
+    print('Validation: Content_Test_loss: ',round(running_content_loss / (len(valloader) - 1), 4), ' Eval_Test_loss: ', round(running_eval_loss/ (len(valloader)-1),4), ' Overall_Test_loss: ', round(running_loss/(len(valloader)-1),4), ' SSIM score: ',round(running_ssim / (len(valloader) - 1), 4), \
                                                 ' PSNR score: ',round(running_psnr / (len(valloader) - 1), 4))

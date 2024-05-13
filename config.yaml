@@ -1,24 +1,24 @@
-RESOLUTION_METHOD: 'Single Pass'  # Single Pass, and Two Step are the valid methods
-SCALE_RATIO: 2
+RESOLUTION_METHOD: 'Two Step'  # Single Pass, and Two Step are the valid methods
+SCALE_RATIO: 16     # Please keep resolution at 16 if it is Two Step
 
 RESULT_DIRS:
-    WEIGHTS: 'Results_2/Saved_Weights'
-    GENERATED_IMAGES: 'Results_2/Generated_Images'
-    LOSSES: 'Results_2/Losses'
-    ACCURACIES: 'Results_2/Accuracies'
+    WEIGHTS: 'Results_2step/Saved_Weights'
+    GENERATED_IMAGES: 'Results_2step/Generated_Images'
+    LOSSES: 'Results_2step/Losses'
+    ACCURACIES: 'Results_2step/Accuracies'
     
 # INFERENCE_SAR_DIR: 'Inference_Input'   # reads only tif files
 # INFERENCE_SAVE_DIR: 'Inference_Output'  # Generated images are in png format
 # INFERENCE_SCALING: 'adaptive histogram'   # Options: (histogram, adaptive histogram)
 # INFERENCE_ADAPTIVE_CLIP_LIMITS: [20,500]   # Used only when adaptive histogram is used
     
-SRUN_VALIDATION_CKPT: 'SRUN_best_ckpt.pth'
+SRUN_VALIDATION_CKPT: 'Best_Checkpoints/SRUN2step_best_ckpt.pth'
 PRETRAINED_SORTN: 'SORTN_ckpt.pth'
 
 TRAIN:
     NUM_EPOCHS: 200
     
-    INITIAL_LR: 0.0001
+    INITIAL_LR: 0.0002
     EVAL_LOSS_WEIGHT: 0.1
     BETA_1: 0.9
     BETA_2: 0.99
