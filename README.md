@@ -10,7 +10,7 @@ Command:
 ```
 pip3 install -r requirements.txt
 
-python3 train.py <PATH TO DATASET>
+python3 main.py <PATH TO DATASET>
 ```
 
 Installs the required libraries from requirements.txt and runs the train script.
