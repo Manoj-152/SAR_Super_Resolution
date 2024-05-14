@@ -8,7 +8,7 @@ The SRUN (Super-Resolution Model) checkpoints are available in the Best Checkpoi
 
 ## Dataset
 
-Please download the [Sentinel 1-2](https://mediatum.ub.tum.de/1436631) dataset (There are 4 folders with SAR-Optic Images pairs of around 40GB). Mention the dataset path later while running the main.py code for training and validation/
+Please download the [Sentinel 1-2](https://mediatum.ub.tum.de/1436631) dataset (There are 4 folders with SAR-Optic Images pairs of around 40GB). Mention the dataset path later while running the main.py code for training and validation.
 
 ## Train
 Command: 
