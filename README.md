@@ -4,6 +4,12 @@ Weights for SORTN model (required to run the code) can be downloaded from the fo
 
 https://drive.google.com/file/d/1OZqkzs6vYdwf3_y0_GiGy0Ycag6I1YPZ/view?usp=drive_link
 
+The SRUN (Super-Resolution Model) checkpoints are available in the Best Checkpoints folder. They are available for 2x, 4x, 8x, 16x, and 2-Step Resolution Process.
+
+## Dataset
+
+Please download the [Sentinel 1-2](https://mediatum.ub.tum.de/1436631) dataset (There are 4 folders with SAR-Optic Images pairs of around 40GB). Mention the dataset path later while running the main.py code for training and validation/
+
 ## Train
 Command: 
 
@@ -19,7 +25,7 @@ Before running the code, respective directories for the dataset and the director
 
 The resolution method (Single Pass and Two Step) can be changed in the config file along with the resolution scales.
 
-## Test/Inference
+## Validation
 Command:
 
 ```
