@@ -1,5 +1,13 @@
 # SAR-Super-resolution-v1
 
+This repository contains a PyTorch implementation of **OGSRN** (Optical-Guided Super-Resolution Network), a framework designed to reconstruct high-resolution Synthetic Aperture Radar (SAR) images by leveraging optical imagery for guidance. The architecture employs a two-stage approach to overcome speckle noise and detail loss: first, the **SRUN** (SAR Super-Resolution U-Net) performs the initial super-resolution reconstruction to focus on high-frequency details; second, the **SORTN** (SAR-to-Optical Residual Translation Network) acts as a guidance mechanism, translating the reconstructed SAR output into the optical domain to ensure structural consistency and constrain the solution space using clean optical features.
+
+<p align="center">
+  <img src="Assets/model_architecture.png" width="400">
+</p>
+
+## Model Weights
+
 Weights for SORTN model (required to run the code) can be downloaded from the following google drive link. 
 
 https://drive.google.com/file/d/1OZqkzs6vYdwf3_y0_GiGy0Ycag6I1YPZ/view?usp=drive_link
@@ -36,7 +44,7 @@ python3 main.py <PATH TO DATASET> --to_do validate
 
 The validation code outputs the validation accuracy obtained along with storing 20 random validation results.
 
-## Test_Sentinel jupyter notebook
+## Inference main jupyter notebook
 This notebook contains the same codes which are used for inference in the script. It provides a visual understanding of what is done at each step (from preprocessing to super-resolving the image).
 
 ## Solution Development
@@ -44,7 +52,7 @@ This notebook contains the same codes which are used for inference in the script
 * Model: SORTN (Present in next branch) is the generator using to obtain optic image from SAR
 * SRUN: Responsible for super-resolving the image, architecture similar to U-Net
 * Loss Functions: Content Loss + 0.1 x Evaluation Loss is used for SRUN. cGAN loss + 100 * L1 loss between optical ground truth and optical generated is used for SORTN.
-* For inference, the inference input is cropped into required patch sizes. The patches are super-resolved and later stitched together. The steps can be visualized in the Test_Sentinel jupyter notebook.
+* For inference, the inference input is cropped into required patch sizes. The patches are super-resolved and later stitched together. The steps can be visualized in the Inference_main jupyter notebook.
 
 ## Results
 (a.) Spacenet 6 dataset
