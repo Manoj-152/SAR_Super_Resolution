@@ -1,4 +1,4 @@
-# SAR-Super-resolution-v1
+# Satellite Image Super-Resolution via Optical Guidance
 
 This repository contains a PyTorch implementation of **OGSRN** (Optical-Guided Super-Resolution Network), a framework designed to reconstruct high-resolution Synthetic Aperture Radar (SAR) images by leveraging optical imagery for guidance. The architecture employs a two-stage approach to overcome speckle noise and detail loss: first, the **SRUN** (SAR Super-Resolution U-Net) performs the initial super-resolution reconstruction to focus on high-frequency details; second, the **SORTN** (SAR-to-Optical Residual Translation Network) acts as a guidance mechanism, translating the reconstructed SAR output into the optical domain to ensure structural consistency and constrain the solution space using clean optical features.
 
